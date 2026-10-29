@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>GB | Delivery Rotation</title>
+<style>
+:root{color-scheme:dark;--bg:#080808;--panel:#111;--panel2:#171717;--line:#343434;--muted:#a6a6a6;--white:#f7f7f7;--green:#d9eadf;--greenInk:#183d2a;--red:#f2dede}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--white);background:var(--white);color:#080808;padding:11px 14px;font-weight:750;border-radius:4px}button.secondary{background:transparent;color:var(--white);border-color:#555}button:disabled{opacity:.4;cursor:not-allowed}
+.wrap{max-width:900px;margin:auto;padding:18px 14px 48px}.top{border:1px solid var(--line);padding:20px;border-radius:8px;background:#0d0d0d}
+.brand{display:flex;align-items:center;gap:16px}.brand img{width:110px;height:82px;object-fit:contain;background:#000}.eyebrow{font-size:11px;letter-spacing:.19em;color:#bcbcbc;text-transform:uppercase}.brand h1{font-size:clamp(23px,5vw,34px);letter-spacing:.045em;margin:4px 0 0;font-weight:900;text-transform:uppercase}.brand p{margin:4px 0 0;color:#b7b7b7;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}.stat{border:1px solid var(--line);padding:12px;border-radius:5px;background:#111}.stat span{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.stat strong{display:block;font-size:25px;margin-top:4px}
+.notice{margin-top:12px;padding:11px 13px;border-left:3px solid #fff;background:#151515;color:#ddd;font-size:13px}.tabs{display:flex;gap:6px;margin:18px 0}.tabs button{flex:1}.tabs button.active{background:#fff;color:#000}.section{border:1px solid var(--line);background:#0d0d0d;border-radius:7px;padding:16px;margin-top:12px}.section h2{font-size:17px;text-transform:uppercase;letter-spacing:.06em;margin:0 0 5px}.sub{color:var(--muted);font-size:13px;margin:0 0 14px}.row{display:flex;align-items:center;gap:12px}.between{justify-content:space-between}.person{display:flex;align-items:center;gap:12px;border:1px solid #303030;border-radius:5px;padding:12px;margin-top:8px;background:#111}.rank{display:grid;place-items:center;min-width:34px;height:34px;border:1px solid #666;font-weight:900}.person-main{flex:1;min-width:0}.person-name{font-weight:750;overflow-wrap:anywhere}.meta{font-size:12px;color:var(--muted);margin-top:3px}.points{font-size:18px;font-weight:900;white-space:nowrap}.person-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.person-actions button{padding:8px 10px;font-size:12px}.tag{font-size:10px;text-transform:uppercase;letter-spacing:.08em;border:1px solid #555;padding:4px 6px;color:#ddd}.tag.on{background:var(--green);border-color:var(--green);color:var(--greenInk)}.empty{padding:28px 12px;text-align:center;border:1px dashed #444;color:var(--muted);border-radius:5px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field label{display:block;color:#bbb;font-size:12px;margin-bottom:5px}.field input,.field select{width:100%;background:#080808;color:white;border:1px solid #555;padding:10px;border-radius:4px}.field small{display:block;color:#888;font-size:11px;margin-top:4px}.formactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.log{padding:12px 0;border-bottom:1px solid #292929}.log:last-child{border-bottom:0}.log strong{display:block}.log small{color:#999}.hidden{display:none!important}.footer{color:#777;font-size:11px;text-align:center;margin-top:18px}.callout{background:#161616;border:1px solid #4a4a4a;padding:12px;border-radius:5px;font-size:12px;color:#ccc;margin:10px 0}.pill{display:inline-block;border:1px solid #666;padding:3px 7px;font-size:11px}
+@media(max-width:560px){.wrap{padding:10px 9px 32px}.top{padding:14px}.brand img{width:82px;height:65px}.stats{gap:5px}.stat{padding:9px}.stat strong{font-size:21px}.section{padding:12px}.person{gap:8px;padding:9px}.person-actions{width:100%;justify-content:stretch}.person-actions button{flex:1}.formgrid{grid-template-columns:1fr}.tabs button{font-size:12px;padding:10px 4px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand">
+    <img src="gb-logo.png" alt="GB Service Solution Installation logo">
+    <div><div class="eyebrow">GB Service Solution Installation</div><h1>Delivery Rotation</h1><p>Team priority system</p></div>
+  </div>
+  <div class="stats">
+    <div class="stat"><span>Team</span><strong id="statTeam">12</strong></div>
+    <div class="stat"><span>Today's candidates</span><strong id="statCandidates">0</strong></div>
+    <div class="stat"><span>Deliveries logged</span><strong id="statDeliveries">0</strong></div>
+  </div>
+  <div class="notice" id="todayNotice">Loading today's status…</div>
+</header>
+
+<nav class="tabs" aria-label="Main navigation">
+  <button class="active" data-tab="candidates">Candidates</button>
+  <button class="secondary" data-tab="team">Team & points</button>
+  <button class="secondary" data-tab="history">History</button>
+  <button class="secondary" data-tab="settings">Settings</button>
+</nav>
+
+<section id="tab-candidates" class="section">
+  <h2>Today's priority list</h2>
+  <p class="sub">Only today's candidates appear here. Lowest lifetime points first; ties go to the person whose last delivery was longest ago.</p>
+  <div id="candidateList"></div>
+  <div class="callout">This list indicates priority only. It does not automatically confirm who will do the delivery. Candidatures reset on the next calendar day.</div>
+</section>
+
+<section id="tab-team" class="section hidden">
+  <h2>Team & points</h2>
+  <p class="sub">Use “Candidate” to enter today's queue. Use “Delivery done” only after the work has actually been completed.</p>
+  <div id="teamList"></div>
+</section>
+
+<section id="tab-history" class="section hidden">
+  <h2>Change history</h2>
+  <p class="sub">Records actions made in this browser. Shared, tamper-resistant history requires an online database.</p>
+  <div id="historyList"></div>
+</section>
+
+<section id="tab-settings" class="section hidden">
+  <h2>Project settings</h2>
+  <p class="sub">Set the real project start date and the candidature closing time. Dates use London local time.</p>
+  <div class="formgrid">
+    <div class="field"><label for="projectStart">Project start date</label><input id="projectStart" type="date"><small>Used to calculate the project day and elapsed time.</small></div>
+    <div class="field"><label for="closeTime">Candidature closing time</label><input id="closeTime" type="time" value="14:00"><small>Editable; the exact time has not been finalized.</small></div>
+    <div class="field"><label for="openTime">Candidature opening time</label><input id="openTime" type="time" value="07:00"><small>Editable.</small></div>
+  </div>
+  <div class="formactions"><button id="saveSettings">Save settings</button><button class="secondary" id="exportData">Export backup (JSON)</button></div>
+  <div class="callout">For a fair starting point, enter the real number of deliveries each person has already completed in “Team & points”. Demo scores are marked as sample data and should be replaced before real use.</div>
+  <h2 style="margin-top:22px">Demo controls</h2>
+  <p class="sub">For supervisor testing only. These reset or change data stored in this browser.</p>
+  <div class="formactions"><button class="secondary" id="resetCandidates">Clear today's candidates</button><button class="secondary" id="resetAll">Reset demo data</button></div>
+</section>
+<div class="footer">GB SERVICE SOLUTION INSTALLATION · DEMONSTRATION BUILD · NOT YET SHARED BETWEEN DEVICES</div>
+</div>
+
+<dialog id="confirmDialog" style="max-width:360px;width:calc(100% - 32px);background:#111;color:white;border:1px solid #555;border-radius:6px;padding:20px">
+  <h2 id="dialogTitle" style="margin-top:0;font-size:18px">Confirm action</h2>
+  <p id="dialogText" style="color:#ccc;font-size:14px"></p>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px"><button class="secondary" id="dialogCancel">Cancel</button><button id="dialogConfirm">Confirm</button></div>
+</dialog>
+<script>
+const STORAGE_KEY='gb_delivery_rotation_demo_v1';
+const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const defaultTeam=[
+ {id:1,name:'GUSTAVO OLIVEIRA',points:0,lastDelivery:null},
+ {id:2,name:'Saul Teixeira',points:2,lastDelivery:null},
+ {id:3,name:'SHAULO SILVA',points:1,lastDelivery:null},
+ {id:4,name:'GIULIANO DIAS',points:3,lastDelivery:null},
+ {id:5,name:'ADAM MEDEIROS',points:0,lastDelivery:null},
+ {id:6,name:'Marcos Venancio',points:4,lastDelivery:null},
+ {id:7,name:'RENATO MOURA',points:1,lastDelivery:null},
+ {id:8,name:'Issac Freitas',points:2,lastDelivery:null},
+ {id:9,name:'ANGELO FERNANDES',points:0,lastDelivery:null},
+ {id:10,name:'CARLOS HENRIQUE',points:3,lastDelivery:null},
+ {id:11,name:'ANDERSON MARSON',points:1,lastDelivery:null},
+ {id:12,name:'DIMITRI TEIXEIRA',points:2,lastDelivery:null}
+];
+let state;
+function fresh(){return {team:structuredClone(defaultTeam),candidates:[],candidateDate:todayKey(),history:[],deliveries:0,settings:{startDate:'',openTime:'07:00',closeTime:'14:00'},demo:true}}
+function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE_KEY));if(x&&x.team){state=x; if(state.candidateDate!==todayKey()){state.candidates=[];state.candidateDate=todayKey();save();}}else state=fresh()}catch(e){state=fresh()} }
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function log(message){state.history.unshift({message,date:todayKey(),time:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});save()}
+function getProjectDay(){if(!state.settings.startDate)return null;const start=new Date(state.settings.startDate+'T00:00:00');const today=new Date(todayKey()+'T00:00:00');return Math.floor((today-start)/86400000)+1}
+function getStatus(){const now=new Date();const mins=now.getHours()*60+now.getMinutes();const [oh,om]=state.settings.openTime.split(':').map(Number);const [ch,cm]=state.settings.closeTime.split(':').map(Number);if(mins<oh*60+om)return `Candidatures open at ${state.settings.openTime} (London time).`;if(mins>=ch*60+cm)return `Candidatures closed for today at ${state.settings.closeTime}.`;return `Candidatures are OPEN until ${state.settings.closeTime} (London time).`}
+function candidatesAllowed(){const now=new Date(), mins=now.getHours()*60+now.getMinutes();const [oh,om]=state.settings.openTime.split(':').map(Number);const [ch,cm]=state.settings.closeTime.split(':').map(Number);return mins>=oh*60+om&&mins<ch*60+cm}
+function compare(a,b){if(a.points!==b.points)return a.points-b.points;const ad=a.lastDelivery?new Date(a.lastDelivery+'T00:00:00').getTime():-Infinity;const bd=b.lastDelivery?new Date(b.lastDelivery+'T00:00:00').getTime():-Infinity;if(ad!==bd)return ad-bd;return a.id-b.id}
+function render(){
+ const proj=getProjectDay();document.getElementById('statTeam').textContent=state.team.length;document.getElementById('statCandidates').textContent=state.candidates.length;document.getElementById('statDeliveries').textContent=state.deliveries;
+ document.getElementById('todayNotice').textContent=`${todayKey()} · ${getStatus()} ${proj===null?'Project start date not set.':proj>0?`Project day ${proj}.`:'Start date is in the future.'}`;
+ document.getElementById('projectStart').value=state.settings.startDate;document.getElementById('openTime').value=state.settings.openTime;document.getElementById('closeTime').value=state.settings.closeTime;
+ const cands=state.team.filter(p=>state.candidates.includes(p.id)).sort(compare);
+ document.getElementById('candidateList').innerHTML=cands.length?cands.map((p,i)=>`<div class="person"><div class="rank">${i+1}</div><div class="person-main"><div class="person-name">${esc(p.name)}</div><div class="meta">${p.lastDelivery?`Last delivery: ${esc(p.lastDelivery)}`:'No previous delivery date entered'}</div></div><div class="points">${p.points} pts</div></div>`).join(''):'<div class="empty">No candidates yet.<br>Open “Team & points” to add someone.</div>';
+ document.getElementById('teamList').innerHTML=[...state.team].sort(compare).map(p=>`<div class="person"><div class="person-main"><div class="person-name">${esc(p.name)} ${state.candidates.includes(p.id)?'<span class="tag on">Candidate</span>':''}</div><div class="meta">${p.points} lifetime points · ${p.lastDelivery?`Last delivery: ${esc(p.lastDelivery)}`:'No last-delivery date'}</div></div><div class="person-actions">${state.candidates.includes(p.id)?`<button class="secondary" data-action="uncandidate" data-id="${p.id}">Withdraw</button>`:`<button data-action="candidate" data-id="${p.id}" ${(!candidatesAllowed()||state.candidateDate!==todayKey())?'disabled':''}>Candidate</button>`}<button class="secondary" data-action="delivery" data-id="${p.id}">Delivery done</button><button class="secondary" data-action="edit" data-id="${p.id}">Edit</button></div></div>`).join('');
+ document.getElementById('historyList').innerHTML=state.history.length?state.history.map(h=>`<div class="log"><strong>${esc(h.message)}</strong><small>${esc(h.date)} · ${esc(h.time)}</small></div>`).join(''):'<div class="empty">No changes recorded yet.</div>';
+}
+function showConfirm(title,text,action){const d=document.getElementById('confirmDialog');document.getElementById('dialogTitle').textContent=title;document.getElementById('dialogText').textContent=text;pendingAction=action;d.showModal()}
+let pendingAction=null;
+document.getElementById('dialogCancel').onclick=()=>document.getElementById('confirmDialog').close();
+document.getElementById('dialogConfirm').onclick=()=>{document.getElementById('confirmDialog').close();if(pendingAction)pendingAction();pendingAction=null};
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>{x.classList.toggle('active',x===b);x.classList.toggle('secondary',x!==b)});document.querySelectorAll('[id^="tab-"]').forEach(s=>s.classList.toggle('hidden',s.id!==`tab-${b.dataset.tab}`));}));
+document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const id=Number(b.dataset.id),p=state.team.find(x=>x.id===id);if(!p)return;
+ if(b.dataset.action==='candidate'){if(!candidatesAllowed()){alert('Candidatures are not open at this time.');return}if(!state.candidates.includes(id)){state.candidates.push(id);log(`${p.name} submitted a candidature.`);render()}}
+ if(b.dataset.action==='uncandidate'){state.candidates=state.candidates.filter(x=>x!==id);log(`${p.name} withdrew their candidature.`);render()}
+ if(b.dataset.action==='delivery'){showConfirm('Confirm delivery?',`Record one completed delivery for ${p.name}? This permanently adds one point in this browser.`,()=>{p.points++;p.lastDelivery=todayKey();state.deliveries++;log(`${p.name} completed a delivery (+1 point).`);render()})}
+ if(b.dataset.action==='edit'){const name=prompt('Worker name:',p.name);if(name===null)return;const pts=prompt('Lifetime delivery points already completed:',String(p.points));if(pts===null)return;const n=Number(pts);if(!name.trim()||!Number.isInteger(n)||n<0){alert('Enter a name and a whole number of points (0 or more).');return}const last=prompt('Date of last delivery (YYYY-MM-DD), or leave blank if unknown:',p.lastDelivery||'');if(last===null)return;p.name=name.trim();p.points=n;p.lastDelivery=last.trim()||null;log(`Updated team record for ${p.name}.`);render()}
+});
+document.getElementById('saveSettings').onclick=()=>{const start=document.getElementById('projectStart').value,open=document.getElementById('openTime').value,close=document.getElementById('closeTime').value;if(!open||!close||open>=close){alert('Closing time must be later than opening time.');return}state.settings={startDate:start,openTime:open,closeTime:close};log('Project dates and candidature hours updated.');render();alert('Settings saved in this browser.')};
+document.getElementById('resetCandidates').onclick=()=>showConfirm('Clear today’s candidates?','This removes all current candidates, but keeps points and history.',()=>{state.candidates=[];log('Current candidate list cleared.');render()});
+document.getElementById('resetAll').onclick=()=>showConfirm('Reset demo data?','This replaces all local demo data with the original sample team and scores.',()=>{state=fresh();save();render()});
+document.getElementById('exportData').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='gb-delivery-rotation-backup.json';a.click();URL.revokeObjectURL(url)};
+load();render();
+setInterval(()=>{if(state.candidateDate!==todayKey()){state.candidates=[];state.candidateDate=todayKey();log('New calendar day: candidate list automatically reset.')}render()},60000);
+</script>
+</body>
+</html>
